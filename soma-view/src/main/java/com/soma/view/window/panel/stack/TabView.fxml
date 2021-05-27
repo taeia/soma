@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.SVGPath?>
+
+<HBox alignment="CENTER_LEFT" prefWidth="120.0" styleClass="tab-view" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane styleClass="icon-button">
+         <children>
+            <Group>
+               <children>
+                  <SVGPath content="m 11.12,15.63 c 0.88,0 1.7,-0.26 2.39,-0.7 l 2.44,2.44 1.42,-1.42 -2.44,-2.43 c 0.44,-0.7 0.7,-1.51 0.7,-2.39 0,-2.49 -2.01,-4.5 -4.5,-4.5 -2.49,0 -4.5,2.01 -4.5,4.5 0,2.49 2.01,4.5 4.49,4.5 z m 0.01,-7 c 1.38,0 2.5,1.12 2.5,2.5 0,1.38 -1.12,2.5 -2.5,2.5 -1.38,0 -2.5,-1.12 -2.5,-2.5 0,-1.38 1.12,-2.5 2.5,-2.5 z" styleClass="icon" />
+               </children>
+            </Group>
+         </children>
+      </StackPane>
+      <Label fx:id="titleLabel" maxWidth="1.7976931348623157E308" style="-fx-text-fill: rgb(187, 187, 187);" text="Search" textOverrun="CLIP" HBox.hgrow="ALWAYS" />
+      <StackPane layoutX="10.0" layoutY="10.0" styleClass="icon-button">
+         <children>
+            <Group>
+               <children>
+                  <SVGPath content="M 14.59,8 12,10.59 9.41,8 8,9.41 10.59,12 8,14.59 9.41,16 12,13.41 14.59,16 16,14.59 13.41,12 16,9.41 Z" styleClass="icon" />
+               </children>
+            </Group>
+         </children>
+      </StackPane>
+   </children>
+</HBox>

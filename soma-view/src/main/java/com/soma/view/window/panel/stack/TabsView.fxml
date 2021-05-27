@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.SVGPath?>
+
+<HBox prefWidth="400.0" styleClass="tabs-view" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.soma.view.window.panel.stack.TabsView">
+   <children>
+      <StackPane styleClass="icon-button">
+         <children>
+            <Group>
+               <children>
+                  <SVGPath content="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12l4.58-4.59z" styleClass="icon" />
+               </children>
+            </Group>
+         </children>
+      </StackPane>
+      <HBox fx:id="tabsPane" HBox.hgrow="ALWAYS" />
+   </children>
+</HBox>
