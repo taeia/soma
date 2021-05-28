@@ -119,4 +119,10 @@ public class Bounds {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Bounds[x=" + minX + ", y=" + minY + ", width=" + width + ", height=" + height + "]";
+    }
+
 }

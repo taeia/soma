@@ -33,7 +33,7 @@ public class GridCellView implements Initializable {
             double y = bounds.getMinY();
             double width = bounds.getWidth();
             double height = bounds.getHeight();
-            System.out.println("cell[x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "] " + this);
+            //            System.out.println("cell[x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "] " + this);
 
             root.setLayoutX(x);
             root.setLayoutY(y);

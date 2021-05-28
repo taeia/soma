@@ -9,7 +9,9 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.util.Pair;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 public class Grid implements Pane, Panel {
@@ -26,7 +28,8 @@ public class Grid implements Pane, Panel {
     private final Flux<Double> heightChanged = Values.of(heightProperty, Schedulers.single()).map(Number::doubleValue);
     
     private final ObjectProperty<Bounds> boundsProperty = new SimpleObjectProperty<>();
-    public final Flux<Bounds> boundsChanged = Values.of(boundsProperty, Schedulers.single());
+    public final Flux<Bounds> boundsChanged = Values.of(boundsProperty,
+            Schedulers.single()).onBackpressureLatest().limitRate(1);
     
     public Grid(String title, Type type, Cell... cells) {
         this.title = title;
@@ -38,8 +41,24 @@ public class Grid implements Pane, Panel {
 	
     private void registerListeners() {
         // TODO change to parallel and remove subscription after cell removed
-        cellAdded.flatMap(cell -> Flux.combineLatest(cell.ratioBoundsChanged, boundsChanged, this::calculateCellBounds).doOnNext(cell::setBounds))
-                .doOnError(Throwable::printStackTrace).subscribe();
+        //        cellAdded.flatMap(cell -> boundsChanged.parallel().runOn(Schedulers.parallel())).publishOn(S)
+
+        // @formatter:off
+        cellAdded.flatMap(cell -> Flux.combineLatest(cell.ratioBoundsChanged, boundsChanged, Pair<Bounds, Bounds>::new)
+                .onBackpressureLatest()
+                .flatMapSequential(args -> Mono.just(args)
+                        .subscribeOn(Schedulers.parallel())
+                        .doOnNext(next -> System.out.println("cell=" + cell.name + " " + args.getValue()))
+                        .map(arg -> calculateCellBounds(arg.getKey(), arg.getValue())), 4)
+                .publishOn(Schedulers.single())
+                .doOnNext(cellBounds -> {
+                    System.out.println(cell.name + "!!! " + cellBounds);
+                    cell.setBounds(cellBounds);
+                }))
+        .subscribe();
+        
+//        cellAdded.flatMap(cell -> Flux.combineLatest(cell.ratioBoundsChanged, boundsChanged, this::calculateCellBounds).doOnNext(cell::setBounds))
+//                .doOnError(Throwable::printStackTrace).subscribe();
     }
 
     @Override
@@ -77,11 +96,26 @@ public class Grid implements Pane, Panel {
         double minY = cellRatioBounds.getMinY() * gridBounds.getHeight();
         double maxX = cellRatioBounds.getMaxX() * gridBounds.getWidth();
         double maxY = cellRatioBounds.getMaxY() * gridBounds.getHeight();
+        Bounds bounds = new Bounds.Builder().minX(minX).minY(minY).maxX(maxX).maxY(maxY).build();
+//        System.out.println("start " + bounds + ", " + Thread.currentThread().getName());
         
-        return new Bounds.Builder().minX(minX).minY(minY).maxX(maxX).maxY(maxY).build();
+//        try {
+//            Random random = new Random();
+//            int sleep = random.nextInt(1000);
+//            TimeUnit.MILLISECONDS.sleep(sleep);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+        
+        
+//        System.out.println("  end " + bounds + ", " + Thread.currentThread().getName());
+        return bounds;
     }
 
     public static class Cell {
+        
+        private static int counter = 0;
+        public final String name = "name" + ++counter;
 
         private final ObjectProperty<Bounds> ratioBoundsProperty = new SimpleObjectProperty<>();
         public final Flux<Bounds> ratioBoundsChanged = Values.of(ratioBoundsProperty, Schedulers.single());

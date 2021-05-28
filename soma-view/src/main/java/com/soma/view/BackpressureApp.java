@@ -34,7 +34,10 @@ public class BackpressureApp extends Application {
                 sink.next(width);
             });
         }, OverflowStrategy.LATEST);
-        flux.limitRate(4).concatMap(width -> Mono.just(width).subscribeOn(computation).map(this::process)).publishOn(Schedulers.single()).subscribe(width -> {
+
+        flux.limitRate(4).flatMap(
+                width -> Mono.just(width).subscribeOn(computation).map(this::process)).publishOn(
+                        Schedulers.single()).subscribe(width -> {
             System.out.println("[" + Thread.currentThread().getName() + "] RECEIVED width=" + width + ", time=" + System.currentTimeMillis());
         });
 
@@ -56,7 +59,6 @@ public class BackpressureApp extends Application {
                 "[" + Thread.currentThread().getName() + "] FINISHED PROCESS width=" + width + " sleep=" + next + ", time=" + System.currentTimeMillis());
         return width;
     }
-
 }
 
 class Width {
